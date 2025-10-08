@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Access Initialized</title>
+    <style>
+        /* General styling for the page */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+        }
+
+        /* The main container for the terminal output */
+        #terminal {
+            padding: 15px;
+            height: 100vh;
+            box-sizing: border-box;
+            white-space: pre-wrap; /* Allows text to wrap */
+            word-wrap: break-word; /* Breaks long words */
+        }
+
+        /* Styling for the blinking cursor */
+        .cursor {
+            display: inline-block;
+            background-color: #00ff41;
+            width: 10px;
+            height: 1.2rem;
+            animation: blink 1s step-end infinite;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        /* Keyframe animation for the blinking effect */
+        @keyframes blink {
+            from, to {
+                background-color: transparent;
+            }
+            50% {
+                background-color: #00ff41;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- This element will hold the terminal text -->
+    <div id="terminal"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const terminal = document.getElementById('terminal');
+            const cursor = '<span class="cursor"></span>';
+            let isAnimationComplete = false; // Flag to track if the typing is done
+
+            // Add an event listener to prevent closing the page
+            window.addEventListener('beforeunload', (event) => {
+                // If the animation is not complete, show a confirmation message
+                if (!isAnimationComplete) {
+                    event.preventDefault(); // Standard for most browsers
+                    event.returnValue = ''; // Required for Chrome/Edge
+                    return 'The sequence is not complete. Are you sure you want to leave?';
+                }
+            });
+
+            // List of messages to be typed out
+            const messages = [
+                { text: 'Initializing connection to remote server...', delay: 1000 },
+                { text: 'Bypassing firewall protocols...', delay: 1500 },
+                { text: 'Accessing main database... [ACCESS GRANTED]', delay: 2000, color: '#ffff00' },
+                { text: 'Downloading sensitive files... Package: user_credentials.zip', delay: 500 },
+                { text: 'Downloading... 10%', delay: 200 },
+                { text: 'Downloading... 35%', delay: 300 },
+                { text: 'Downloading... 68%', delay: 250 },
+                { text: 'Downloading... 99%', delay: 400 },
+                { text: 'Download complete. File saved to /local/secure_folder.', delay: 1000, color: '#39ff14' },
+                { text: 'Injecting trojan virus... [SUCCESS]', delay: 1500, color: '#ff4d4d' },
+                { text: 'Erasing digital footprints...', delay: 1000 },
+                { text: 'Operation complete. Disconnecting in 3... 2... 1...', delay: 2500, color: '#00ffff' },
+                { text: 'SYSTEM COMPROMISED. HAVE A NICE DAY. :)', delay: 500, final: true }
+            ];
+
+            let messageIndex = 0;
+            
+            // Function to simulate typing effect
+            function typeWriter(messageObj) {
+                const { text, color, final } = messageObj;
+                let charIndex = 0;
+                
+                // Add a new line with the prompt symbol
+                const lineElement = document.createElement('div');
+                if (color) {
+                    lineElement.style.color = color;
+                }
+                terminal.appendChild(lineElement);
+                
+                const interval = setInterval(() => {
+                    if (charIndex < text.length) {
+                        // Display text character by character with the cursor
+                        lineElement.innerHTML = `> ${text.substring(0, charIndex + 1)}${cursor}`;
+                        charIndex++;
+                    } else {
+                        // Stop the interval and remove cursor from the line
+                        clearInterval(interval);
+                        lineElement.innerHTML = `> ${text}`;
+                        if (!final) {
+                           // Move to the next message
+                           runSequence();
+                        } else {
+                            // Set the flag to true once the final message is displayed
+                            isAnimationComplete = true;
+                            // Add a final blinking cursor at the end
+                            const finalCursor = document.createElement('div');
+                            finalCursor.innerHTML = `>${cursor}`;
+                            terminal.appendChild(finalCursor);
+                        }
+                    }
+                     // Scroll to the bottom of the terminal
+                    window.scrollTo(0, document.body.scrollHeight);
+                }, 50); // Typing speed
+            }
+            
+            // Function to run the sequence of messages
+            function runSequence() {
+                if (messageIndex < messages.length) {
+                    const message = messages[messageIndex];
+                    setTimeout(() => {
+                        typeWriter(message);
+                        messageIndex++;
+                    }, message.delay);
+                }
+            }
+            
+            // Start the simulation
+            runSequence();
+        });
+    </script>
+
+</body>
+</html>
+
